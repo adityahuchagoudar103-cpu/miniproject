@@ -1014,7 +1014,7 @@
       "title": "Interview Scheduled: Frontend React Intern",
       "message": "WebCraft Studios has scheduled your technical interview for Oct 15, 2026 at 16:30 IST. Check details in your dashboard.",
       "type": "interview_invite",
-      "isRead": false,
+      "isRead": true,
       "link": "/applications",
       "createdAt": "2026-10-08T10:00:00.000Z"
     },
@@ -1024,7 +1024,7 @@
       "title": "Status Update: Full Stack Software Engineer",
       "message": "Your application APP-2026-84102 at NexaTech Innovations has been moved to Shortlisted!",
       "type": "status_update",
-      "isRead": false,
+      "isRead": true,
       "link": "/applications",
       "createdAt": "2026-10-07T09:15:00.000Z"
     },
