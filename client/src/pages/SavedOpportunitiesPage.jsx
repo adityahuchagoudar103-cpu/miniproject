@@ -153,9 +153,9 @@ export const SavedOpportunitiesPage = ({
                   key={item.id}
                   job={item}
                   isSaved={true}
-                  hasApplied={appliedIds.has(item.id)}
-                  onApply={onApply}
-                  onViewDetails={onViewDetails}
+                  hasApplied={Boolean(appliedIds?.has(item.id))}
+                  onApply={(j) => onApply(j, 'job')}
+                  onViewDetails={(j) => onViewDetails(j, 'job')}
                   onToggleSave={onToggleSave}
                 />
               );
@@ -165,9 +165,9 @@ export const SavedOpportunitiesPage = ({
                 key={item.id}
                 internship={item}
                 isSaved={true}
-                hasApplied={appliedIds.has(item.id)}
-                onApply={onApply}
-                onViewDetails={onViewDetails}
+                hasApplied={Boolean(appliedIds?.has(item.id))}
+                onApply={(i) => onApply(i, 'internship')}
+                onViewDetails={(i) => onViewDetails(i, 'internship')}
                 onToggleSave={onToggleSave}
               />
             );

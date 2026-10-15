@@ -25,16 +25,30 @@ export const JobsPage = ({
   const [employmentType, setEmploymentType] = useState('All');
   const [location, setLocation] = useState('');
 
-  const fetchJobs = async () => {
+  // Synchronize when initialBranch changes from parent or navigation
+  useEffect(() => {
+    if (initialBranch) {
+      setBranch(initialBranch);
+    }
+  }, [initialBranch]);
+
+  const fetchJobs = async (overrides = {}) => {
     try {
       setLoading(true);
+      const activeBranch = overrides.branch !== undefined ? overrides.branch : branch;
+      const activeSearch = overrides.search !== undefined ? overrides.search : search;
+      const activeWorkMode = overrides.workMode !== undefined ? overrides.workMode : workMode;
+      const activeExp = overrides.experienceLevel !== undefined ? overrides.experienceLevel : experienceLevel;
+      const activeEmp = overrides.employmentType !== undefined ? overrides.employmentType : employmentType;
+      const activeLocation = overrides.location !== undefined ? overrides.location : location;
+
       const params = new URLSearchParams();
-      if (branch && branch !== 'All') params.append('branch', branch);
-      if (search) params.append('search', search);
-      if (workMode && workMode !== 'All') params.append('workMode', workMode);
-      if (experienceLevel && experienceLevel !== 'All') params.append('experienceLevel', experienceLevel);
-      if (employmentType && employmentType !== 'All') params.append('employmentType', employmentType);
-      if (location) params.append('location', location);
+      if (activeBranch && activeBranch !== 'All') params.append('branch', activeBranch);
+      if (activeSearch) params.append('search', activeSearch);
+      if (activeWorkMode && activeWorkMode !== 'All') params.append('workMode', activeWorkMode);
+      if (activeExp && activeExp !== 'All') params.append('experienceLevel', activeExp);
+      if (activeEmp && activeEmp !== 'All') params.append('employmentType', activeEmp);
+      if (activeLocation) params.append('location', activeLocation);
 
       const res = await fetch(`/api/jobs?${params.toString()}`);
       if (res.ok) {
@@ -64,6 +78,14 @@ export const JobsPage = ({
     setExperienceLevel('All');
     setEmploymentType('All');
     setLocation('');
+    fetchJobs({
+      search: '',
+      branch: 'All',
+      workMode: 'All',
+      experienceLevel: 'All',
+      employmentType: 'All',
+      location: ''
+    });
   };
 
   return (
@@ -295,10 +317,10 @@ export const JobsPage = ({
             <JobCard
               key={job.id}
               job={job}
-              isSaved={savedIds.has(job.id)}
-              hasApplied={appliedIds.has(job.id)}
-              onApply={onApply}
-              onViewDetails={j => onViewDetails(j, 'job')}
+              isSaved={Boolean(savedIds?.has(job.id))}
+              hasApplied={Boolean(appliedIds?.has(job.id))}
+              onApply={(item) => onApply(item, 'job')}
+              onViewDetails={(item) => onViewDetails(item, 'job')}
               onToggleSave={onToggleSave}
             />
           ))}

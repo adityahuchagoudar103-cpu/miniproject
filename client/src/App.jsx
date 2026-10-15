@@ -23,8 +23,36 @@ function MainApp() {
   const { user } = useAuth();
   const { addToast } = useNotification();
 
-  const [activePage, setActivePage] = useState('home');
+  const getPageFromHash = () => {
+    const hash = window.location.hash.replace(/^#\/?/, '').trim();
+    const valid = ['home', 'jobs', 'internships', 'branches', 'dashboard', 'applications', 'saved', 'recruiter', 'admin'];
+    return valid.includes(hash) ? hash : 'home';
+  };
+
+  const [activePage, setActivePage] = useState(getPageFromHash);
   const [selectedBranch, setSelectedBranch] = useState(user?.branch || 'All');
+
+  // Synchronize browser history and hash navigation
+  useEffect(() => {
+    const handleHashChange = () => {
+      const page = getPageFromHash();
+      setActivePage(page);
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const navigateToPage = (page) => {
+    setActivePage(page);
+    if (page === 'home') {
+      if (window.location.hash) {
+        window.history.pushState(null, '', window.location.pathname);
+      }
+    } else {
+      window.location.hash = `#/${page}`;
+    }
+    scrollToTop();
+  };
 
   // Modals state
   const [detailsModal, setDetailsModal] = useState({ isOpen: false, opportunity: null, type: 'job' });
@@ -72,13 +100,14 @@ function MainApp() {
     }
 
     try {
+      const resolvedType = opportunityType || 'job';
       const res = await fetch('/api/saved/toggle', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-user-id': user.id
         },
-        body: JSON.stringify({ opportunityId, opportunityType })
+        body: JSON.stringify({ opportunityId, opportunityType: resolvedType })
       });
 
       if (res.ok) {
@@ -105,19 +134,21 @@ function MainApp() {
   const handleApply = (opportunity, type) => {
     if (!user) {
       setAuthModal({ isOpen: true, mode: 'login' });
-      addToast('info', 'Login Required', 'Please sign in to submit your job application.');
+      addToast('info', 'Login Required', 'Please sign in to submit your application.');
       return;
     }
     if (user.role !== 'student') {
       addToast('error', 'Student Account Needed', `You are logged in as a ${user.role}. Only student accounts can apply.`);
       return;
     }
-    setApplyModal({ isOpen: true, opportunity, type: type || 'job' });
+    const resolvedType = type || (opportunity?.duration ? 'internship' : 'job');
+    setApplyModal({ isOpen: true, opportunity, type: resolvedType });
   };
 
   // Open opportunity details modal
   const handleViewDetails = (opportunity, type) => {
-    setDetailsModal({ isOpen: true, opportunity, type: type || 'job' });
+    const resolvedType = type || (opportunity?.duration ? 'internship' : 'job');
+    setDetailsModal({ isOpen: true, opportunity, type: resolvedType });
   };
 
   // Scroll to top helper
@@ -130,10 +161,7 @@ function MainApp() {
       {/* Navigation Header */}
       <Navbar
         activePage={activePage}
-        setActivePage={page => {
-          setActivePage(page);
-          scrollToTop();
-        }}
+        setActivePage={navigateToPage}
         selectedBranch={selectedBranch}
         setSelectedBranch={setSelectedBranch}
         openAuthModal={mode => setAuthModal({ isOpen: true, mode: mode || 'login' })}

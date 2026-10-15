@@ -170,7 +170,7 @@ export const InternshipCard = ({ internship, isSaved, hasApplied, onApply, onVie
           <button
             className="btn btn-secondary btn-sm"
             style={{ flex: 1 }}
-            onClick={() => onViewDetails(internship)}
+            onClick={() => onViewDetails(internship, 'internship')}
           >
             Details
           </button>
@@ -193,7 +193,7 @@ export const InternshipCard = ({ internship, isSaved, hasApplied, onApply, onVie
             <button
               className="btn btn-primary btn-sm"
               style={{ flex: 1.3, background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}
-              onClick={() => onApply(internship)}
+              onClick={() => onApply(internship, 'internship')}
             >
               Apply Now
             </button>

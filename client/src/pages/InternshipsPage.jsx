@@ -25,16 +25,30 @@ export const InternshipsPage = ({
   const [workMode, setWorkMode] = useState('All');
   const [academicYear, setAcademicYear] = useState('All');
 
-  const fetchInternships = async () => {
+  // Synchronize when initialBranch changes from parent or navigation
+  useEffect(() => {
+    if (initialBranch) {
+      setBranch(initialBranch);
+    }
+  }, [initialBranch]);
+
+  const fetchInternships = async (overrides = {}) => {
     try {
       setLoading(true);
+      const activeBranch = overrides.branch !== undefined ? overrides.branch : branch;
+      const activeSearch = overrides.search !== undefined ? overrides.search : search;
+      const activeDuration = overrides.duration !== undefined ? overrides.duration : duration;
+      const activeStipendType = overrides.stipendType !== undefined ? overrides.stipendType : stipendType;
+      const activeWorkMode = overrides.workMode !== undefined ? overrides.workMode : workMode;
+      const activeYear = overrides.academicYear !== undefined ? overrides.academicYear : academicYear;
+
       const params = new URLSearchParams();
-      if (branch && branch !== 'All') params.append('branch', branch);
-      if (search) params.append('search', search);
-      if (duration && duration !== 'All') params.append('duration', duration);
-      if (stipendType && stipendType !== 'All') params.append('stipendType', stipendType);
-      if (workMode && workMode !== 'All') params.append('workMode', workMode);
-      if (academicYear && academicYear !== 'All') params.append('academicYear', academicYear);
+      if (activeBranch && activeBranch !== 'All') params.append('branch', activeBranch);
+      if (activeSearch) params.append('search', activeSearch);
+      if (activeDuration && activeDuration !== 'All') params.append('duration', activeDuration);
+      if (activeStipendType && activeStipendType !== 'All') params.append('stipendType', activeStipendType);
+      if (activeWorkMode && activeWorkMode !== 'All') params.append('workMode', activeWorkMode);
+      if (activeYear && activeYear !== 'All') params.append('academicYear', activeYear);
 
       const res = await fetch(`/api/internships?${params.toString()}`);
       if (res.ok) {
@@ -64,6 +78,14 @@ export const InternshipsPage = ({
     setStipendType('All');
     setWorkMode('All');
     setAcademicYear('All');
+    fetchInternships({
+      search: '',
+      branch: 'All',
+      duration: 'All',
+      stipendType: 'All',
+      workMode: 'All',
+      academicYear: 'All'
+    });
   };
 
   return (
@@ -296,10 +318,10 @@ export const InternshipsPage = ({
             <InternshipCard
               key={intern.id}
               internship={intern}
-              isSaved={savedIds.has(intern.id)}
-              hasApplied={appliedIds.has(intern.id)}
-              onApply={onApply}
-              onViewDetails={i => onViewDetails(i, 'internship')}
+              isSaved={Boolean(savedIds?.has(intern.id))}
+              hasApplied={Boolean(appliedIds?.has(intern.id))}
+              onApply={(item) => onApply(item, 'internship')}
+              onViewDetails={(item) => onViewDetails(item, 'internship')}
               onToggleSave={onToggleSave}
             />
           ))}

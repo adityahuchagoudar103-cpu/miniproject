@@ -398,33 +398,68 @@ export const StudentDashboardPage = ({
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
           <div>
             <h2 style={{ fontSize: '1.35rem' }}>
-              Recommended for <span className="gradient-accent">{user?.branch || 'Your Branch'}</span> Students
+              Recommended Jobs for <span className="gradient-accent">{user?.branch || 'Your Branch'}</span> Students
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-              Roles matching your engineering department and technical background
+              Full-time roles matching your engineering department and coursework
             </p>
           </div>
           <button
-            onClick={() => setActivePage('branches')}
+            onClick={() => setActivePage('jobs')}
             style={{ color: 'var(--primary)', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
           >
-            Explore Department Hub <ChevronRight size={16} />
+            View All Jobs <ChevronRight size={16} />
           </button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
           {recommendedJobs.map(job => (
             <JobCard
               key={job.id}
               job={job}
-              isSaved={savedIds.has(job.id)}
-              hasApplied={appliedIds.has(job.id)}
-              onApply={onApply}
-              onViewDetails={onViewDetails}
+              isSaved={Boolean(savedIds?.has(job.id))}
+              hasApplied={Boolean(appliedIds?.has(job.id))}
+              onApply={(j) => onApply(j, 'job')}
+              onViewDetails={(j) => onViewDetails(j, 'job')}
               onToggleSave={onToggleSave}
             />
           ))}
         </div>
+
+        {recommendedInternships.length > 0 && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+              <div>
+                <h2 style={{ fontSize: '1.35rem' }}>
+                  Recommended Internships for <span className="gradient-accent">{user?.branch || 'Your Branch'}</span> Students
+                </h2>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                  Fast-track summer & semester internships open for your academic year
+                </p>
+              </div>
+              <button
+                onClick={() => setActivePage('internships')}
+                style={{ color: '#a855f7', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
+              >
+                View All Internships <ChevronRight size={16} />
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1.5rem' }}>
+              {recommendedInternships.map(intern => (
+                <InternshipCard
+                  key={intern.id}
+                  internship={intern}
+                  isSaved={Boolean(savedIds?.has(intern.id))}
+                  hasApplied={Boolean(appliedIds?.has(intern.id))}
+                  onApply={(i) => onApply(i, 'internship')}
+                  onViewDetails={(i) => onViewDetails(i, 'internship')}
+                  onToggleSave={onToggleSave}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

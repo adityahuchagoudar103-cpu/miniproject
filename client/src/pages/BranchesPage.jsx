@@ -51,6 +51,13 @@ export const BranchesPage = ({
   const [activeTab, setActiveTab] = useState('jobs'); // 'jobs' | 'internships'
   const [search, setSearch] = useState('');
 
+  // Synchronize when initialBranch changes from parent or navigation
+  useEffect(() => {
+    if (initialBranch) {
+      setSelectedBranchId(initialBranch);
+    }
+  }, [initialBranch]);
+
   const [jobs, setJobs] = useState([]);
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -315,10 +322,10 @@ export const BranchesPage = ({
               <JobCard
                 key={job.id}
                 job={job}
-                isSaved={savedIds.has(job.id)}
-                hasApplied={appliedIds.has(job.id)}
-                onApply={onApply}
-                onViewDetails={onViewDetails}
+                isSaved={Boolean(savedIds?.has(job.id))}
+                hasApplied={Boolean(appliedIds?.has(job.id))}
+                onApply={(j) => onApply(j, 'job')}
+                onViewDetails={(j) => onViewDetails(j, 'job')}
                 onToggleSave={onToggleSave}
               />
             ))}
@@ -339,10 +346,10 @@ export const BranchesPage = ({
               <InternshipCard
                 key={intern.id}
                 internship={intern}
-                isSaved={savedIds.has(intern.id)}
-                hasApplied={appliedIds.has(intern.id)}
-                onApply={onApply}
-                onViewDetails={onViewDetails}
+                isSaved={Boolean(savedIds?.has(intern.id))}
+                hasApplied={Boolean(appliedIds?.has(intern.id))}
+                onApply={(i) => onApply(i, 'internship')}
+                onViewDetails={(i) => onViewDetails(i, 'internship')}
                 onToggleSave={onToggleSave}
               />
             ))}

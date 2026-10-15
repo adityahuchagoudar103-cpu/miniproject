@@ -158,7 +158,7 @@ export const JobCard = ({ job, isSaved, hasApplied, onApply, onViewDetails, onTo
           <button
             className="btn btn-secondary btn-sm"
             style={{ flex: 1 }}
-            onClick={() => onViewDetails(job)}
+            onClick={() => onViewDetails(job, 'job')}
           >
             Details
           </button>
@@ -181,7 +181,7 @@ export const JobCard = ({ job, isSaved, hasApplied, onApply, onViewDetails, onTo
             <button
               className="btn btn-primary btn-sm"
               style={{ flex: 1.3 }}
-              onClick={() => onApply(job)}
+              onClick={() => onApply(job, 'job')}
             >
               Apply Now
             </button>
