@@ -18,6 +18,7 @@ import { AuthModal } from './components/AuthModal';
 import { ProfileModal } from './components/ProfileModal';
 import { BRANCHES } from './constants/branches';
 import { GraduationCap, Sparkles, Heart, Shield, Code, ArrowUp } from 'lucide-react';
+import { LoginPage } from './pages/LoginPage';
 
 function MainApp() {
   const { user } = useAuth();
@@ -25,7 +26,7 @@ function MainApp() {
 
   const getPageFromHash = () => {
     const hash = window.location.hash.replace(/^#\/?/, '').trim();
-    const valid = ['home', 'jobs', 'internships', 'branches', 'dashboard', 'applications', 'saved', 'recruiter', 'admin'];
+    const valid = ['home', 'jobs', 'internships', 'branches', 'dashboard', 'applications', 'saved', 'recruiter', 'admin', 'login'];
     return valid.includes(hash) ? hash : 'home';
   };
 
@@ -169,6 +170,10 @@ function MainApp() {
 
       {/* Main Content Area */}
       <main style={{ flex: 1 }}>
+        {activePage === 'login' && (
+          <LoginPage onSuccess={() => { fetchUserActivity(); setActivePage('dashboard'); }} />
+        )}
+
         {activePage === 'home' && (
           <HomePage
             setActivePage={setActivePage}
